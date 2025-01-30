@@ -1,0 +1,27 @@
+{
+  "dependencies": {
+    "@types/express": "^5.0.0",
+    "express": "^4.21.2",
+    "mysql2": "^3.12.0",
+    "tsc": "^2.0.4",
+    "uuid": "^11.0.5"
+  },
+  "name": "case-management",
+  "version": "1.0.0",
+  "main": "server.js",
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "dotenv": "^16.4.7",
+    "nodemon": "^3.1.9",
+    "typescript": "^5.7.3"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start:dev": "nodemon",
+    "start:prod": "npm run build && node ./dist/server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": ""
+}
