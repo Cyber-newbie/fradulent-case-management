@@ -1,9 +1,10 @@
+import { RowDataPacket } from "mysql2";
 import { ParticipantStatus, ParticipantType } from "../utils/Enums";
 import { v4 as uuidv4 } from 'uuid'
 
 export class Participant {
 
-    private id?: string;
+    private id: string;
     private instituteName: string;
     private type: ParticipantType;
     private email: string;

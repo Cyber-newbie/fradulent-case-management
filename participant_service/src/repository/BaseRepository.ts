@@ -1,9 +1,14 @@
 import { Connection } from "mysql2/typings/mysql/lib/Connection";
 import Database from "../config/Database";
-import { Query, QueryError, QueryResult, Pool, RowDataPacket} from "mysql2/promise";
+import { Query, QueryError, QueryResult, Pool, RowDataPacket, ResultSetHeader} from "mysql2/promise";
 import { IRepository } from "./IRepository";
 import { log } from "console";
 import { User, UserInterface, UserQuery } from "../entity/User";
+
+
+type RowType<T extends RowDataPacket | ResultSetHeader> = T extends RowDataPacket
+  ? T[]
+  : ResultSetHeader;
 
 class BaseRepository<T> implements IRepository<T> {
 
@@ -45,12 +50,16 @@ class BaseRepository<T> implements IRepository<T> {
     }
 
 
-    public async executeQuery<T extends RowDataPacket>(query: string): Promise<T[]> {
+
+
+    public async executeQuery<T extends RowDataPacket | ResultSetHeader>(query: string): Promise<RowType<T>> {
         try {
 
-        const [queryResult, field] = await this.connection.query<T[]>(query);
-         console.log("Query executed successfully");
-         return queryResult;
+        const [queryResult, field] = await this.connection.query<QueryResult>(query);
+        console.log("Query executed successfully");
+
+        return queryResult as RowType<T>;
+
         } catch (error) {
             console.error("Error executing query: " + error);
             throw new Error("Error executing query: " + error);

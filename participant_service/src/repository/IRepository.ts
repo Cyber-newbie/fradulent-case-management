@@ -1,4 +1,4 @@
-import { Pool, QueryResult } from "mysql2/promise";
+import { Pool, QueryResult, ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 export interface IRepository<T = void> {
     
@@ -12,7 +12,7 @@ export interface IRepository<T = void> {
 
     executeQuery(query: string): Promise<any>;
 
-    create?: (data: T) => Promise<T[]>   
+    create?: (data: T) => Promise<ResultSetHeader>   
 
     findById?: (id: number) => Promise<QueryResult>
 
