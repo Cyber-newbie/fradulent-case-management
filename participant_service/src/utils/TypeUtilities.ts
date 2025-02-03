@@ -1,3 +1,5 @@
+import { RowDataPacket } from "mysql2"
+
 export type Config = {
     server: {
         port: number
@@ -8,4 +10,8 @@ export type Config = {
         password: string | undefined,
         database: string | undefined
     }
+}
+
+export interface CountResult extends RowDataPacket {
+    totalCount: number;
 }

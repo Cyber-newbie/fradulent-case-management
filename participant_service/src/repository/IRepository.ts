@@ -14,11 +14,11 @@ export interface IRepository<T = void> {
 
     create?: (data: T) => Promise<ResultSetHeader>   
 
-    findById?: (id: number) => Promise<QueryResult>
+    findById?: (id: number) => Promise<T[]>
 
     getAll?: () => Promise<T[]>
     
-    update?: (data: T) => Promise<T>
+    update?: (data: T) => Promise<ResultSetHeader>
 
-    delete?: (id: number) => Promise<boolean>
+    delete?: (id: number) => Promise<ResultSetHeader>
 }

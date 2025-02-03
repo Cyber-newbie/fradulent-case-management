@@ -34,10 +34,11 @@ export class ParticipantRepository extends BaseRepository<Participant> implement
             return result
     }
 
-    async findById(id: number): Promise<QueryResult> {
+    async findById(id: number): Promise<Participant[]> {
 
            this.query = `SELECT * FROM participants WHERE id = ${id}`
-            return await super.executeQuery(this.query)
+            const result: RowDataPacket[] =  await super.executeQuery<RowDataPacket>(this.query)
+            return result as Participant[];
     };
 
     async getAll(): Promise<Participant[]> {
@@ -48,23 +49,19 @@ export class ParticipantRepository extends BaseRepository<Participant> implement
 
     };
 
-    async update(data: Participant): Promise<Participant> {
+    async update(data: Participant): Promise<ResultSetHeader> {
 
         this.query = `UPDATE participants SET institute_name =
          ${data.getInstituteName()}, type = ${data.getType()}, email = ${data.getEmail()}, phone_number=${data.getPhoneNumber()},
-         address = ${data.getAddress()} , country = ${data.getCountry()} , status = ${data.getStatus()}`
+         address = ${data.getAddress()} , country = ${data.getCountry()} , status = ${data.getStatus()}
+         WHERE id = ${data.getId()}`
 
-        const result: unknown =  await super.executeQuery(this.query)
-        
-        console.log("UPDATE: ", result)
-        return result as Participant
+        return  await super.executeQuery<ResultSetHeader>(this.query)
     };
 
-    async delete(id: number): Promise<boolean> {
+    async delete(id: number): Promise<ResultSetHeader> {
 
         this.query = `DELETE FROM participants WHERE id = ${id}`
-        const result =  await super.executeQuery(this.query)
-        console.log("DELETE: ", result)
-        return true
+        return await super.executeQuery<ResultSetHeader>(this.query)
     };
 }

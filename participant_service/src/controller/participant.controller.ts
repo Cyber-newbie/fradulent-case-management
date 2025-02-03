@@ -14,7 +14,7 @@ class ParticipantController {
         this.register = this.register.bind(this);
     }
 
-    protected async register(req: Request<unknown, unknown, ParticipantDto>, res: Response): Promise<void> {
+    public async register(req: Request<unknown, unknown, ParticipantDto>, res: Response): Promise<void> {
         try {
 
          const participant: Participant = Participant.Builder()
