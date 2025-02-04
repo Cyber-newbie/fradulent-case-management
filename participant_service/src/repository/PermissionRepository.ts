@@ -45,16 +45,16 @@ access varchar(100) unique not null
 
     async findById(id: number): Promise<Permission[]> {
 
-           this.query = `SELECT * FROM participants WHERE id = ${id}`
+           this.query = `SELECT * FROM permissions WHERE id = ${id}`
             const result: RowDataPacket[] =  await super.executeQuery<RowDataPacket>(this.query)
             return result as Permission[]
     };
 
-    async getAll(): Promise<Permission[]> {
+    async getAll(): Promise<RowDataPacket[]> {  
         
-        this.query = `SELECT * FROM participants`
+        this.query = `SELECT * FROM permissions`
         const result:RowDataPacket[] =  await super.executeQuery<RowDataPacket>(this.query)
-        return result as Permission[]
+        return result
 
     };
 

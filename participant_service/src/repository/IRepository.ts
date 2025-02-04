@@ -16,7 +16,7 @@ export interface IRepository<T = void> {
 
     findById?: (id: number) => Promise<T[]>
 
-    getAll?: () => Promise<T[]>
+    getAll?: () => Promise<RowDataPacket[]>
     
     update?: (data: T) => Promise<ResultSetHeader>
 

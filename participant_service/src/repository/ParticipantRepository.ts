@@ -29,9 +29,13 @@ export class ParticipantRepository extends BaseRepository<Participant> implement
         this.query = `INSERT INTO participants (id, institute_name, type, email, phone_number, address, country, status) 
             VALUES ('${data.getId()}', '${data.getInstituteName()}', '${data.getType()}', '${data.getEmail()}', 
             '${data.getPhoneNumber()}', '${data.getAddress()}', '${data.getCountry()}', '${data.getStatus()}')`
-        
-            const result = await super.executeQuery<ResultSetHeader>(this.query)
-            return result
+            try {
+                const result = await super.executeQuery<ResultSetHeader>(this.query)
+                return result
+                
+            } catch (error) {
+                throw new Error("Error executing query: " + error)
+            }
     }
 
     async findById(id: number): Promise<Participant[]> {
@@ -41,11 +45,11 @@ export class ParticipantRepository extends BaseRepository<Participant> implement
             return result as Participant[];
     };
 
-    async getAll(): Promise<Participant[]> {
+    async getAll(): Promise<RowDataPacket[]> {
         
         this.query = `SELECT * FROM participants`
         const result =  await super.executeQuery(this.query)
-        return result as Participant[]
+        return result as RowDataPacket[]
 
     };
 

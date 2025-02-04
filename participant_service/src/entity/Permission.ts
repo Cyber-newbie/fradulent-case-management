@@ -1,4 +1,14 @@
-export class Permission  {
+import { RowDataPacket } from "mysql2";
+
+export interface IPermission extends RowDataPacket {
+
+    id: number
+    access: string;
+
+}
+
+
+export class Permission {
 
     private id: number; 
     private access: string;
@@ -9,7 +19,7 @@ export class Permission  {
     }
 
 
-    public Builder(){
+    public static Builder(){
         return new Permission();
     }
 
@@ -23,6 +33,11 @@ export class Permission  {
     
     public setAccess(value: string) {
         this.access = value
+        return this;
+    }
+
+    public setId(value: number) {
+        this.id = value
         return this;
     }
 

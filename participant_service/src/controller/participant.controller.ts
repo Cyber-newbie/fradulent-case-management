@@ -25,10 +25,10 @@ class ParticipantController {
          .setInstituteName(req.body.instituteName)
             
             log("Participant body: ", participant)
-            await this.participantService.create(participant)
+            const createdParticipant = await this.participantService.register(participant)
             
             res.status(201).json({message: "Participant registered.",
-                 data: participant
+                 data: createdParticipant
                 });
 
         } catch (error: any) {
