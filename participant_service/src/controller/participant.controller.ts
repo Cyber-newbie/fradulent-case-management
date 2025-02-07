@@ -1,9 +1,8 @@
 import { Request, Response } from 'express';
 import { log } from 'console';
-import { UserInterface } from '../entity/User';
 import ParticipantService from '../service/participant.service';
-import { Participant } from '../entity/Participant';
 import { ParticipantDto } from '../dto/ParticipantDto';
+import { Participant } from '@cms/db-repository';
 
 
 class ParticipantController {

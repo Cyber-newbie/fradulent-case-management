@@ -1,9 +1,7 @@
-import { log } from "console";
-import { User, UserInterface, UserQuery } from "../entity/User"
-import { QueryResult, ResultSetHeader, RowDataPacket } from "mysql2";
-import { ParticipantRepository } from "../repository/ParticipantRepository";
-import { Participant } from "../entity/Participant";
-import { PermissionService } from "./permission.service";
+import { log } from "console"
+import { PermissionService } from "./permission.service"
+import { ParticipantRepository, Participant } from "@cms/db-repository"
+import { ResultSetHeader } from "mysql2"
 
 class ParticipantService {
 
@@ -40,8 +38,26 @@ class ParticipantService {
         } catch (error) {
             throw new Error("Error registering participant " + error)
         }
+    } 
+    
+    uploadTransactionDataByJSON = async (): Promise<void> => {
 
     }
+
+
+    uploadTransactionDataByFile = async (): Promise<void> => {
+
+    }
+
+    uploadCustomerDataByJSON = async (): Promise<void> => {
+
+    }
+
+
+    uploadCustomerDataByFile = async (): Promise<void> => {
+
+    }
+
 
 
 }

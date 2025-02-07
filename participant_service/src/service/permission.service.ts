@@ -1,9 +1,9 @@
 import { ResultSetHeader } from "mysql2";
-import { Permission } from "../entity/Permission";
-import { PermissionRepository } from "../repository/PermissionRepository";
 import { bound } from "../decorator/helper.decorator";
-import { ParticipantPermission } from "../entity/ParticipantPermission";
-import { ParticipantPermissionRepository } from "../repository/ParticipantPermissionRepository";
+import { PermissionRepository, ParticipantPermissionRepository, 
+    Permission, ParticipantPermission } from "@cms/db-repository/src";
+
+
 
 export class PermissionService {
 
