@@ -38,26 +38,8 @@ class ParticipantService {
         } catch (error) {
             throw new Error("Error registering participant " + error)
         }
-    } 
-    
-    uploadTransactionDataByJSON = async (): Promise<void> => {
 
     }
-
-
-    uploadTransactionDataByFile = async (): Promise<void> => {
-
-    }
-
-    uploadCustomerDataByJSON = async (): Promise<void> => {
-
-    }
-
-
-    uploadCustomerDataByFile = async (): Promise<void> => {
-
-    }
-
 
 
 }
