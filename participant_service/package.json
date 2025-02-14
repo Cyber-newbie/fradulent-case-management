@@ -2,7 +2,9 @@
   "dependencies": {
     "@cms/db-repository": "file:../../db-package",
     "@types/express": "^5.0.0",
+    "csv-parser": "^3.2.0",
     "express": "^4.21.2",
+    "multer": "^1.4.5-lts.1",
     "mysql2": "^3.12.0",
     "tsc": "^2.0.4",
     "uuid": "^11.0.5"
@@ -11,6 +13,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "devDependencies": {
+    "@types/multer": "^1.4.12",
     "@types/node": "^22.10.2",
     "dotenv": "^16.4.7",
     "nodemon": "^3.1.9",

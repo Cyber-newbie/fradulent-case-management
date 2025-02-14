@@ -41,11 +41,11 @@ export class PermissionService {
     async getAllPermissions(): Promise<Permission[]>{
         const result = await this.permissionRepository.getAll();
         return result.map(perm => {
-            return Permission.Builder().setId(perm?.id).setAccess(perm?.access)
+            return Permission.Builder().setId(perm?.getId()).setAccess(perm?.getAccess())
         })
     }
 
-    async assignInitialPermissions(participantId: number): Promise<void> {
+    async assignInitialPermissions(participantId: string): Promise<void> {
 
         try {
 

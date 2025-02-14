@@ -8,12 +8,12 @@ class ParticipantService {
     private participantRepository: ParticipantRepository = new ParticipantRepository()
     private permissionService: PermissionService = new PermissionService()
     
-    private create = async (participant: Participant): Promise<number> => {
+    private create = async (participant: Participant): Promise<string> => {
         console.log("creating participant....")
         try {
 
             const data: ResultSetHeader =  await this.participantRepository.create(participant);
-            return data.insertId;
+            return data.insertId.toString();
             
         } catch (error) {
             log('Error creating participant: ', error);
@@ -21,7 +21,7 @@ class ParticipantService {
         }
     }
 
-    getParticipantById = async(id: number): Promise<Participant> => {
+    getParticipantById = async(id: string): Promise<Participant> => {
         const participant = await this.participantRepository.findById(id)
         return participant[0]
     }
@@ -38,8 +38,9 @@ class ParticipantService {
         } catch (error) {
             throw new Error("Error registering participant " + error)
         }
-
     }
+
+    
 
 
 }

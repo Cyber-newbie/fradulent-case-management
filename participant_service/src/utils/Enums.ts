@@ -14,3 +14,10 @@ Other = "OTHER"
 
 }
 
+export enum CustomerKYCStatus {
+
+Active = "ACTIVE",
+Inactive = "INACTIVE",
+Suspended = "SUSPENDED"
+
+}
