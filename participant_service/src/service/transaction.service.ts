@@ -30,7 +30,7 @@ insertBatchJson = async (data: TransactionDto[]): Promise<void> => {
     console.log("data transaction: ", transactionData)
 
     try {
-         await this.transactionRepository.createBulk(transactionData)
+        //  await this.transactionRepository.createBulk(transactionData)
     } catch (error) {
         console.error("ERROR INSERTING CUSTOMER BULK JSON")
         throw new Error("ERROR INSERTING CUSTOMER BULK: " + error)
@@ -38,7 +38,7 @@ insertBatchJson = async (data: TransactionDto[]): Promise<void> => {
 
 }
 
-handleCustomerFile = async (file: Express.Multer.File): Promise<void> => {
+handleTramsactionFile = async (file: Express.Multer.File): Promise<void> => {
 
     try {
         
@@ -50,7 +50,7 @@ handleCustomerFile = async (file: Express.Multer.File): Promise<void> => {
         }
         
         const transactionData = await this.prepareCustomerData(this.storeFileChunks)
-        console.log("customer data before creating: ", transactionData)
+        console.log("transaction data before creating: ", transactionData)
         await this.transactionRepository.createBulk(transactionData)
     } catch (error) {
         console.log("Error procerssing customer file: " + error)        
@@ -74,7 +74,6 @@ private prepareCustomerData = (data: Object[]): Promise<Transaction[]> => {
     const accountData =  this.storeFileChunks.map(async (item: any) => {
         const account = await this.accountRepository.getAccountByCustomerEmail(item?.customerEmail)
         return Transaction.Builder()
-        .setAccountId(item?.accountId || "")
         .setAccountId(account.id)
         .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
         .setAmount(item?.amount || "")
