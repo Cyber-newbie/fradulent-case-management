@@ -75,7 +75,7 @@ private fileListener = (data: Buffer<ArrayBufferLike> | string) => {
 }
 
 private prepareCustomerData = (data: Object[]): Customer[] => {
-    return this.storeFileChunks.map((item: any) => {
+    return data.map((item: any) => {
         return Customer.Builder()
         .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
         .setFirstName(item?.firstName || "")

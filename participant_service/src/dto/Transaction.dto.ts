@@ -2,6 +2,7 @@ import { TransactionPaymentMethod, TransactionStatus, TransactionType } from "..
 
 export interface TransactionDto {
     id?: string;
+    customerEmail: string;
     participantId: string;
     accountId: string;
     type: TransactionType;

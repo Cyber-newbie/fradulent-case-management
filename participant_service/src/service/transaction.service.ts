@@ -1,19 +1,21 @@
-import { Transaction, TransactionRepository } from "@cms/db-repository"
+import { AccountRepository, Transaction, TransactionRepository } from "@cms/db-repository"
 import { TransactionDto } from "../dto/Transaction.dto";
 import { createReadStream } from "fs";
 import csv from "csv-parser";
 export class transactionService {
 
     private transactionRepository: TransactionRepository = new TransactionRepository() 
+    private accountRepository: AccountRepository = new AccountRepository()
     private storeFileChunks: Object[] = new Array()
 
 insertBatchJson = async (data: TransactionDto[]): Promise<void> => {
 
     const transactionData: any = new Array();
     for(const trx of data) {
-
-    const transaction =  Transaction.Builder()
-        .setAccountId(trx.accountId)
+    
+        const account = await this.accountRepository.getAccountByCustomerEmail(trx.customerEmail)
+        const transaction =  Transaction.Builder()
+        .setAccountId(account.id)
         .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
         .setAmount(trx.amount)
         .setCurrency(trx.currency)
@@ -47,9 +49,9 @@ handleCustomerFile = async (file: Express.Multer.File): Promise<void> => {
             this.storeFileChunks.push(record)
         }
         
-        const customerData = this.prepareCustomerData(this.storeFileChunks)
-        console.log("customer data before creating: ", customerData)
-        await this.transactionRepository.createBulk(customerData)
+        const transactionData = await this.prepareCustomerData(this.storeFileChunks)
+        console.log("customer data before creating: ", transactionData)
+        await this.transactionRepository.createBulk(transactionData)
     } catch (error) {
         console.log("Error procerssing customer file: " + error)        
         throw new Error("Error procerssing customer file: " + error)
@@ -68,10 +70,12 @@ private fileListener = (data: Buffer<ArrayBufferLike> | string) => {
 
 }
 
-private prepareCustomerData = (data: Object[]): Transaction[] => {
-    return this.storeFileChunks.map((item: any) => {
+private prepareCustomerData = (data: Object[]): Promise<Transaction[]> => {
+    const accountData =  this.storeFileChunks.map(async (item: any) => {
+        const account = await this.accountRepository.getAccountByCustomerEmail(item?.customerEmail)
         return Transaction.Builder()
         .setAccountId(item?.accountId || "")
+        .setAccountId(account.id)
         .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
         .setAmount(item?.amount || "")
         .setCurrency(item?.currency || "")
@@ -80,6 +84,7 @@ private prepareCustomerData = (data: Object[]): Transaction[] => {
         .setPaymentMethod(item?.paymentMethod || "")
         .setTime(item?.time || "")
     })
+    return Promise.all(accountData)
 }
 
 

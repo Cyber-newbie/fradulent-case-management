@@ -2,6 +2,7 @@ import { AccountType, AccountStatus } from "../utils/Enums"; // Adjust path as n
 
 export interface AccountDto {
     id?: string;
+    customerEmail: string;
     participantId: string;
     customerId: string;
     type: AccountType;

@@ -1,4 +1,4 @@
-import { Account, AccountRepository } from "@cms/db-repository"
+import { Account, AccountRepository, CustomerRepository } from "@cms/db-repository"
 import { AccountDto } from "../dto/Account.dto";
 import { createReadStream } from "fs";
 import csv from "csv-parser";
@@ -7,16 +7,17 @@ import csv from "csv-parser";
 export class AccountService {
 
     private accountRepository: AccountRepository = new AccountRepository() 
+    private customerRepository: CustomerRepository = new CustomerRepository()
     private storeFileChunks: Object[] = new Array()
 
 insertBatchJson = async (data: AccountDto[]): Promise<void> => {
 
     const accountData: Account[] = [];
     for(const acc of data) {
-
+    const customerData  = await this.customerRepository.getCustomerByEmail(acc.customerEmail)
     const account =  Account.Builder()
         .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
-        .setCustomerId(acc.customerId)
+        .setCustomerId(customerData.id)
         .setBalance(acc.balance)
         .setCurrency(acc.currency)
         .setType(acc.type)
@@ -46,10 +47,12 @@ handleAccountFile = async (file: Express.Multer.File): Promise<void> => {
         for await (const record of parser){
             this.storeFileChunks.push(record)
         }
+
+        console.log('chunks: ', this.storeFileChunks)
         
-        const customerData = this.prepareCustomerData(this.storeFileChunks)
-        console.log("customer data before creating: ", customerData)
-        await this.accountRepository.createBulk(customerData)
+        const accountData = await this.prepareCustomerData(this.storeFileChunks)
+        console.log("customer data before creating: ", accountData)
+        await this.accountRepository.createBulk(accountData)
     } catch (error) {
         console.log("Error procerssing customer file: " + error)        
         throw new Error("Error procerssing customer file: " + error)
@@ -58,17 +61,18 @@ handleAccountFile = async (file: Express.Multer.File): Promise<void> => {
 }
 
 
-private prepareCustomerData = (data: Object[]): Account[] => {
-    return this.storeFileChunks.map((item: any) => {
+private prepareCustomerData = (data: Object[]): Promise<Account[]> => {
+    const accounts =  data.map(async (item: any) => {
+        const customerData = await this.customerRepository.getCustomerByEmail(item?.customerEmail)
         return Account.Builder()
         .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
-        .setCustomerId(item.customerId || "") 
-        .setBalance(item.balance || "")
-        .setCurrency(item.currency || "")
-        .setType(item.type || "")
-        .setStatus(item.status || "")
-    }
-)
+        .setCustomerId(customerData.id || "") 
+        .setBalance(item?.balance || "")
+        .setCurrency(item?.currency || "")
+        .setType(item?.type || "")
+        .setStatus(item?.status || "")
+    })
+    return Promise.all(accounts)
 }
 
 }

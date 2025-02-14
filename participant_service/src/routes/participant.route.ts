@@ -17,6 +17,9 @@ class ParticipantRouter {
         this.router.post('/register', this.participantController.register)
         this.router.post('/customer/json-data', this.participantController.uploadCustomerDataJson)
         this.router.post('/customer/upload-data', multer.single('data'), this.participantController.uploadCustomerDataFile)
+
+        this.router.post('/account/json-data', multer.single('data'), this.participantController.uploadAccountDataJson)
+        this.router.post('/account/upload-data', multer.single('data'), this.participantController.uploadAccountDataFile)
     }
 
 }
