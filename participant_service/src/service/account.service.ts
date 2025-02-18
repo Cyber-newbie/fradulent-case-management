@@ -2,77 +2,51 @@ import { Account, AccountRepository, CustomerRepository } from "@cms/db-reposito
 import { AccountDto } from "../dto/Account.dto";
 import { createReadStream } from "fs";
 import csv from "csv-parser";
+import path from "path";
+import { Worker } from "worker_threads";
 
 
 export class AccountService {
 
-    private accountRepository: AccountRepository = new AccountRepository() 
-    private customerRepository: CustomerRepository = new CustomerRepository()
-    private storeFileChunks: Object[] = new Array()
+    private storeFileChunks: Object[] = [];
 
-insertBatchJson = async (data: AccountDto[]): Promise<void> => {
+    processJsonData = async (data: AccountDto[]): Promise<void> => {
+        try {
 
-    const accountData: Account[] = [];
-    for(const acc of data) {
-    const customerData  = await this.customerRepository.getCustomerByEmail(acc.customerEmail)
-    const account =  Account.Builder()
-        .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
-        .setCustomerId(customerData.id)
-        .setBalance(acc.balance)
-        .setCurrency(acc.currency)
-        .setType(acc.type)
-        .setStatus(acc.status)
+            console.log("Sending account data to worker:", data);
 
-    accountData.push(account)    
-    }
+            const worker = new Worker(path.resolve(__dirname, "../worker/accountWorker.ts"), {
+                workerData: { type: "json", data },
+                execArgv: ["-r", "ts-node/register"],
+            });
 
-    console.log("Account data: ", accountData)
-
-    try {
-         await this.accountRepository.createBulk(accountData)
-    } catch (error) {
-        console.error("ERROR INSERTING ACCOUNT BULK JSON")
-        throw new Error("ERROR INSERTING ACCOUNT BULK: " + error)
-    }
-
-}
-
-handleAccountFile = async (file: Express.Multer.File): Promise<void> => {
-
-    try {
-        
-        const content = createReadStream(file.path)
-        const parser = content.pipe(csv())
-    
-        for await (const record of parser){
-            this.storeFileChunks.push(record)
+            worker.on("message", (msg) => console.log("Message received from worker:", msg));
+            worker.on("error", (err) => console.error("Worker Error:", err));
+            worker.on("exit", (code) => {
+                if (code !== 0) {
+                    console.error(`Worker stopped with exit code ${code}`);
+                }
+            });
+        } catch (error) {
+            console.error("Error creating worker for Account Processing:", error);
         }
+    };
 
-        console.log('chunks: ', this.storeFileChunks)
-        
-        const accountData = await this.prepareCustomerData(this.storeFileChunks)
-        console.log("customer data before creating: ", accountData)
-        await this.accountRepository.createBulk(accountData)
-    } catch (error) {
-        console.log("Error procerssing customer file: " + error)        
-        throw new Error("Error procerssing customer file: " + error)
-    }
-    
-}
+    handleAccountFile = async (file: Express.Multer.File): Promise<void> => {
+        try {
+            const content = createReadStream(file.path);
+            const parser = content.pipe(csv());
 
+            for await (const record of parser) {
+                this.storeFileChunks.push(record);
+            }
 
-private prepareCustomerData = (data: Object[]): Promise<Account[]> => {
-    const accounts =  data.map(async (item: any) => {
-        const customerData = await this.customerRepository.getCustomerByEmail(item?.customerEmail)
-        return Account.Builder()
-        .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
-        .setCustomerId(customerData.id || "") 
-        .setBalance(item?.balance || "")
-        .setCurrency(item?.currency || "")
-        .setType(item?.type || "")
-        .setStatus(item?.status || "")
-    })
-    return Promise.all(accounts)
-}
+            console.log("Parsed account CSV data:", this.storeFileChunks);
+            this.processJsonData(this.storeFileChunks as AccountDto[]);
+        } catch (error) {
+            console.error("Error processing account file:", error);
+            throw new Error("Error processing account file: " + error);
+        }
+    };
 
 }

@@ -47,9 +47,9 @@ class ParticipantController {
     public async uploadCustomerDataJson(req: Request<unknown, unknown, CustomerDto[]>, res: Response): Promise<void> {
         try {
             console.log("customer req body: ", req.body)
-            await this.customerService.insertBatchJson(req.body)
+            await this.customerService.processJsonData(req.body)
             res.status(201).json({
-                message: "Customer data inserted"
+                message: "Processing data initialized, you will be notified "
             })
             
         } catch (error) {
@@ -80,8 +80,8 @@ class ParticipantController {
     public async uploadAccountDataJson(req: Request<unknown, unknown, AccountDto[]>, res: Response): Promise<void> {
         try {
             console.log("account req body: ", req.body)
-            await this.accountService.insertBatchJson(req.body)
-
+            await this.accountService.processJsonData(req.body)
+            
             res.status(201).json({
                 message: "Account data inserted"
             })
@@ -133,7 +133,7 @@ class ParticipantController {
         try {
             const file: Express.Multer.File | undefined = req.file ? req.file : undefined
 
-            if(file) await this.transactionService.handleTramsactionFile(file)            
+            if(file) await this.transactionService.handleTransactionFile(file)            
             else throw new Error("Please upload a file ")       
 
             res.status(201).json({message: "The data is processing, you will be notified."})

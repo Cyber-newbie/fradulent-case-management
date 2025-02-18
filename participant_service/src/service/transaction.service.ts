@@ -2,89 +2,50 @@ import { AccountRepository, Transaction, TransactionRepository } from "@cms/db-r
 import { TransactionDto } from "../dto/Transaction.dto";
 import { createReadStream } from "fs";
 import csv from "csv-parser";
+import { Worker } from "worker_threads";
+import path from "path";
+
 export class transactionService {
 
-    private transactionRepository: TransactionRepository = new TransactionRepository() 
     private accountRepository: AccountRepository = new AccountRepository()
     private storeFileChunks: Object[] = new Array()
 
-insertBatchJson = async (data: TransactionDto[]): Promise<void> => {
+    processJsonData = async (data: TransactionDto[]): Promise<void> => {
+        try {
+            console.log("Sending transaction data to worker:", data);
 
-    const transactionData: any = new Array();
-    for(const trx of data) {
-    
-        const account = await this.accountRepository.getAccountByCustomerEmail(trx.customerEmail)
-        const transaction =  Transaction.Builder()
-        .setAccountId(account.id)
-        .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
-        .setAmount(trx.amount)
-        .setCurrency(trx.currency)
-        .setType(trx.type)
-        .setStatus(trx.status)
-        .setPaymentMethod(trx.paymentMethod)
-        .setTime(trx.time)
-        
-       transactionData.push(transaction) 
-    }
+            const worker = new Worker(path.resolve(__dirname, "../worker/transactionWorker.ts"), {
+                workerData: { type: "json", data },
+                execArgv: ["-r", "ts-node/register"],
+            });
 
-    console.log("data transaction: ", transactionData)
-
-    try {
-        //  await this.transactionRepository.createBulk(transactionData)
-    } catch (error) {
-        console.error("ERROR INSERTING CUSTOMER BULK JSON")
-        throw new Error("ERROR INSERTING CUSTOMER BULK: " + error)
-    }
-
-}
-
-handleTramsactionFile = async (file: Express.Multer.File): Promise<void> => {
-
-    try {
-        
-        const content = createReadStream(file.path)
-        const parser = content.pipe(csv())
-    
-        for await (const record of parser){
-            this.storeFileChunks.push(record)
+            worker.on("message", (msg) => console.log("Message received from worker:", msg));
+            worker.on("error", (err) => console.error("Worker Error:", err));
+            worker.on("exit", (code) => {
+                if (code !== 0) {
+                    console.error(`Worker stopped with exit code ${code}`);
+                }
+            });
+        } catch (error) {
+            console.error("Error creating worker for Transaction Processing:", error);
         }
-        
-        const transactionData = await this.prepareCustomerData(this.storeFileChunks)
-        console.log("transaction data before creating: ", transactionData)
-        await this.transactionRepository.createBulk(transactionData)
-    } catch (error) {
-        console.log("Error procerssing customer file: " + error)        
-        throw new Error("Error procerssing customer file: " + error)
-    }
+    };
 
+    handleTransactionFile = async (file: Express.Multer.File): Promise<void> => {
+        try {
+            const content = createReadStream(file.path);
+            const parser = content.pipe(csv());
 
-    
-}
+            for await (const record of parser) {
+                this.storeFileChunks.push(record);
+            }
 
-private fileListener = (data: Buffer<ArrayBufferLike> | string) => {
-    console.log('before parsing data: ', data)
-    const arrData = data.toString().split('\n').filter(row => row.trim() !== '') 
-  .map(row => row.replace(/\r$/, '').split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/));
-    console.log('after parsing data ', arrData)
-  this.storeFileChunks.push(...arrData)
-
-}
-
-private prepareCustomerData = (data: Object[]): Promise<Transaction[]> => {
-    const accountData =  this.storeFileChunks.map(async (item: any) => {
-        const account = await this.accountRepository.getAccountByCustomerEmail(item?.customerEmail)
-        return Transaction.Builder()
-        .setAccountId(account.id)
-        .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
-        .setAmount(item?.amount || "")
-        .setCurrency(item?.currency || "")
-        .setType(item?.type || "")
-        .setStatus(item?.status || "")
-        .setPaymentMethod(item?.paymentMethod || "")
-        .setTime(item?.time || "")
-    })
-    return Promise.all(accountData)
-}
-
+            console.log("Parsed transaction CSV data:", this.storeFileChunks);
+            this.processJsonData(this.storeFileChunks as TransactionDto[]);
+        } catch (error) {
+            console.error("Error processing transaction file:", error);
+            throw new Error("Error processing transaction file: " + error);
+        }
+    };
 
 }
