@@ -4,11 +4,13 @@ import { createReadStream } from "fs";
 import csv from "csv-parser";
 import path from "path";
 import { Worker } from "worker_threads";
+import { AccountStatus } from "../utils/Enums";
 
 
 export class AccountService {
 
     private storeFileChunks: Object[] = [];
+    private accountRepository: AccountRepository = new AccountRepository()
 
     processJsonData = async (data: AccountDto[]): Promise<void> => {
         try {
@@ -48,5 +50,11 @@ export class AccountService {
             throw new Error("Error processing account file: " + error);
         }
     };
+
+    getAllActiveAccounts = async (participantId: string, status: AccountStatus): Promise<AccountDto[]> => {
+
+        const result = await this.accountRepository.getAccountsByStatus(participantId, status)
+        return result as unknown as AccountDto[]
+    }
 
 }

@@ -18,6 +18,7 @@ const insertBatchJson = async (data: TransactionDto[]): Promise<void> => {
         const transactionData: Transaction[] = await Promise.all(
             data.map(async (trx) => {
                 const account = await accountRepository.getAccountByCustomerEmail(trx.customerEmail);
+                const time = new Date(trx.time)
                 return Transaction.Builder()
                     .setAccountId(account?.id || "")
                     .setParticipantId("9ec109cd-2cf3-4add-b74e-aeb7b866f4a1")
@@ -26,7 +27,7 @@ const insertBatchJson = async (data: TransactionDto[]): Promise<void> => {
                     .setType(trx.type)
                     .setStatus(trx.status)
                     .setPaymentMethod(trx.paymentMethod)
-                    .setTime(trx.time);
+                    .setTime(time);
             })
         );
 

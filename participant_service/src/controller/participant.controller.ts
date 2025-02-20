@@ -11,6 +11,10 @@ import { AccountService } from '../service/account.service';
 import { AccountDto } from '../dto/Account.dto';
 import { transactionService } from '../service/transaction.service';
 import { TransactionDto } from '../dto/Transaction.dto';
+import { IResponseBody, ResponseBody } from '../dto/ResponseDto.dto';
+import { AccountStatus } from '../utils/Enums';
+import { UserService } from '../service/user.service';
+import { IUserRoleDto } from '../dto/User.dto';
 
 class ParticipantController {
 
@@ -18,6 +22,7 @@ class ParticipantController {
     private customerService: customerService = new customerService()
     private accountService: AccountService = new AccountService()
     private transactionService: transactionService = new transactionService()
+    private userService: UserService = new UserService()
     
     @bound
     public async register(req: Request<unknown, unknown, ParticipantDto>, res: Response): Promise<void> {
@@ -114,7 +119,7 @@ class ParticipantController {
     public async uploadTransactionDataJson(req: Request<unknown, unknown, TransactionDto[]>, res: Response): Promise<void> {
         try {
             console.log("account req body: ", req.body)
-            await this.transactionService.insertBatchJson(req.body)
+            await this.transactionService.processJsonData(req.body)
 
             res.status(201).json({
                 message: "Account data inserted"
@@ -143,6 +148,36 @@ class ParticipantController {
         }
 
     }
+
+    @bound
+    public async getAccountsByStatus(req: Request<any, any, any, {status: AccountStatus}>,
+         res: Response<IResponseBody<AccountDto[]>>): Promise<void> {
+
+            const participantId = "9ec109cd-2cf3-4add-b74e-aeb7b866f4a1"
+            const accountStatus = req.query.status
+            const accounts = await this.accountService.getAllActiveAccounts(participantId, accountStatus)
+               
+            const response = new ResponseBody<AccountDto[]>(accounts)
+            response.message = `fetched all accounts with status ${accountStatus}`
+
+            res.status(200).json(response)
+
+    }
+
+    @bound
+    public async createUserAndAssignRoles(req: Request<any, any, IUserRoleDto>,
+         res: Response<IResponseBody>): Promise<void> {
+
+            const participantId = "9ec109cd-2cf3-4add-b74e-aeb7b866f4a1"
+            const { user, roles } = req.body
+            await this.userService.create(user, roles)
+
+            const response = new ResponseBody(null)
+            response.message = "User has been created and assigned roles."
+
+            res.status(201).json(response)
+
+         }
 
 }
 

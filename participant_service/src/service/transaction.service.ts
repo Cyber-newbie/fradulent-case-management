@@ -7,7 +7,6 @@ import path from "path";
 
 export class transactionService {
 
-    private accountRepository: AccountRepository = new AccountRepository()
     private storeFileChunks: Object[] = new Array()
 
     processJsonData = async (data: TransactionDto[]): Promise<void> => {

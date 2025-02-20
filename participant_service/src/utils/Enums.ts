@@ -4,7 +4,15 @@ Active = "ACTIVE",
 Inactive = "INACTIVE",
 Suspended = "SUSPENDED"
 
- }
+}
+
+export enum Status {
+
+Active = "ACTIVE",
+Inactive = "INACTIVE",
+Suspended = "SUSPENDED"
+
+}
 
 export enum ParticipantType {
 
