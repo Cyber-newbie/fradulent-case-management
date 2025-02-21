@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { Config } from '../utils/TypeUtilities';
-dotenv.config();
+dotenv.config({path: `.env.${process.env.NODE_ENV === "production" ? "production" : "" }`});
 
 // const { env }  = process
 export const config : Config = {

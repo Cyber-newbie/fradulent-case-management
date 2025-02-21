@@ -17,11 +17,12 @@ const httpServer = app.listen(config.server.port || 5000, async () => {
     //insert permissions and roles into the table
     await permissionService.createBulkIfNotExist()
     await roleService.createBulkIfNotExist()
-console.log(`Server is running on http://localhost:${config.server.port}`)
+console.log(`Server is running on http://localhost:${config.server.port} env: ${process.env.NODE_ENV}`)
 
 })
 
 const handleServerClose = () => {
+
     console.log('Received SIGTERM: Closing server...');
     httpServer.close(() => {
       console.log('Server closed. Exiting process.');
