@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql
+    container_name: mysql-db-prod
+    environment:
+      MYSQL_ROOT_PASSWORD: Bigdev@99
+      MYSQL_DATABASE: caseManagement
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data_prod:/var/lib/mysql
+
+  participant-service:
+    build:
+      context: ./participant_service
+      dockerfile: Dockerfile.prod
+    depends_on:
+      - mysql
+    ports:
+      - "3000:3000"
+    env_file:
+      - participant_service/.env.production
+    restart: always
+
+volumes:
+  mysql_data_prod:
+

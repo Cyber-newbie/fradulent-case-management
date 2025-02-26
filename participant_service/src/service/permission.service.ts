@@ -1,7 +1,7 @@
 import { ResultSetHeader } from "mysql2";
 import { bound } from "../decorator/helper.decorator";
 import { PermissionRepository, ParticipantPermissionRepository, 
-    Permission, ParticipantPermission } from "@cms/db-repository";
+    Permission, ParticipantPermission } from "@cyber-newbie/db-repository";
 
 
 

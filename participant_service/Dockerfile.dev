@@ -1,0 +1,26 @@
+FROM ubuntu AS builder
+
+# Install Node.js and dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g typescript@5.7.3
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json first
+COPY package.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Expose the port
+EXPOSE 3000
+
+# Start in development mode
+CMD ["npm", "run", "start:dev"]

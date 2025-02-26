@@ -1,4 +1,4 @@
-import { Customer, CustomerRepository } from "@cms/db-repository"
+import { Customer, CustomerRepository } from "@cyber-newbie/db-repository"
 import { CustomerDto } from "../dto/Customer.dto"
 import { readFile,  } from "fs/promises";
 import { pipeline } from "stream/promises";

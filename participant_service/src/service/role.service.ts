@@ -1,4 +1,4 @@
-import { Role, RoleRepository,  } from "@cms/db-repository";
+import { Role, RoleRepository,  } from "@cyber-newbie/db-repository";
 
 export class RoleService {
 

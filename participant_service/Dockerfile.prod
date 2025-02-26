@@ -1,0 +1,53 @@
+# Stage 1: Build Stage
+FROM ubuntu AS builder
+
+# Install Node.js and dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs \
+    && npm install -g typescript@5.7.3
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json first
+COPY package.json ./
+COPY package-lock.json ./
+# Install dependencies
+RUN npm install
+
+# Copy the rest of the application
+COPY . .
+
+# Build TypeScript files
+RUN npm run build
+
+# ------------------------------------
+
+# Stage 2: Production Image
+FROM ubuntu
+
+# Install minimal Node.js
+RUN apt-get update && apt-get install -y \
+    curl \
+    && curl -fsSL https://deb.nodesource.com/setup_22.x | bash - \
+    && apt-get install -y nodejs 
+
+# Set working directory
+WORKDIR /app
+
+# Set production environment
+ENV NODE_ENV=production
+
+# Copy compiled files and dependencies
+COPY --from=builder /app/dist /app/dist
+COPY --from=builder /app/node_modules /app/node_modules
+COPY --from=builder /app/package.json /app/package.json
+COPY --from=builder /app/package-lock.json /app/package-lock.json
+
+# Expose the port
+EXPOSE 3000
+
+# Start in production mode
+CMD ["npm", "run", "start:prod"]

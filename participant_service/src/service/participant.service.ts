@@ -1,6 +1,6 @@
 import { log } from "console"
 import { PermissionService } from "./permission.service"
-import { ParticipantRepository, Participant } from "@cms/db-repository"
+import { ParticipantRepository, Participant } from "@cyber-newbie/db-repository"
 import { ResultSetHeader } from "mysql2"
 
 class ParticipantService {

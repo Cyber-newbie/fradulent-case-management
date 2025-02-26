@@ -1,11 +1,12 @@
 import dotenv from 'dotenv';
 import { Config } from '../utils/TypeUtilities';
-dotenv.config({path: `.env.${process.env.NODE_ENV === "production" ? "production" : "" }`});
+dotenv.config({path: `.env${process.env.NODE_ENV === "production" ? ".production" : "" }`});
 
 // const { env }  = process
 export const config : Config = {
     server: {
-        port: parseInt(process.env.SERVER_PORT || "") || 5000
+        port: parseInt(process.env.SERVER_PORT || "") || 5000,
+        origin: process.env.ORIGIN || ""
     }, 
 
     database: {

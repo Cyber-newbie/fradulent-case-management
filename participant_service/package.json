@@ -1,20 +1,21 @@
 {
   "dependencies": {
-    "@cms/db-repository": "file:../../db-package",
+    "@cyber-newbie/db-repository": "^1.2.0",
+    "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
-    "bcrypt": "^5.1.1",
+    "bcryptjs": "^3.0.2",
+    "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
     "express": "^4.21.2",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.12.0",
-    "tsc": "^2.0.4",
     "uuid": "^11.0.5"
   },
   "name": "case-management",
   "version": "1.0.0",
   "main": "server.js",
   "devDependencies": {
-    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.10.2",
     "cross-env": "^7.0.3",

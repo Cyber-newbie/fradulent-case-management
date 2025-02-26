@@ -3,7 +3,7 @@ import { ParsedQs } from "qs"
 import { log } from 'console';
 import ParticipantService from '../service/participant.service';
 import { ParticipantDto } from '../dto/Participant.dto';
-import { Participant} from '@cms/db-repository';
+import { Participant} from '@cyber-newbie/db-repository';
 import { bound } from '../decorator/helper.decorator';
 import { customerService } from '../service/customer.service';
 import { CustomerDto } from '../dto/Customer.dto';

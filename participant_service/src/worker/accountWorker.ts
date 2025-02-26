@@ -1,7 +1,7 @@
 import { createReadStream } from "fs";
 import { AccountDto } from "../dto/Account.dto";
 import csv from "csv-parser";
-import { Account, AccountRepository, CustomerRepository } from "@cms/db-repository";
+import { Account, AccountRepository, CustomerRepository } from "@cyber-newbie/db-repository";
 import { parentPort, workerData } from "worker_threads";
 
 

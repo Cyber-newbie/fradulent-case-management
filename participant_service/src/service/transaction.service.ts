@@ -1,4 +1,4 @@
-import { AccountRepository, Transaction, TransactionRepository } from "@cms/db-repository"
+import { AccountRepository, Transaction, TransactionRepository } from "@cyber-newbie/db-repository"
 import { TransactionDto } from "../dto/Transaction.dto";
 import { createReadStream } from "fs";
 import csv from "csv-parser";

@@ -1,7 +1,7 @@
 import { createReadStream } from "fs";
 import csv from "csv-parser";
 import { CustomerDto } from "../dto/Customer.dto";
-import { Customer, CustomerRepository } from "@cms/db-repository";
+import { Customer, CustomerRepository } from "@cyber-newbie/db-repository";
 import { parentPort, workerData,  } from "worker_threads";
 
 const customerRepository = new CustomerRepository

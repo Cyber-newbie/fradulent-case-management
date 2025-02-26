@@ -1,9 +1,9 @@
-import { Role, RoleRepository, User, UserRepository } from "@cms/db-repository";
+import { Role, RoleRepository, User, UserRepository } from "@cyber-newbie/db-repository";
 import { IUser } from "../dto/User.dto";
-import bcrypt from "bcrypt"
-import { RoleService } from "./role.service";
+import bcrypt from "bcryptjs"
 import { RoleDto } from "../dto/Role.dto";
-import { Status } from "@cms/db-repository/dist/utils/Enums";
+import { Status } from "@cyber-newbie/db-repository/dist/utils/Enums";
+
 export class UserService {
 
     private userRepository: UserRepository = new UserRepository()
@@ -26,7 +26,7 @@ export class UserService {
             .setpassword(hashedPassword)
             .setStatus(data.status || Status.Active)
 
-            await this.userRepository.createAndAssign(user, userRoles)
+            // await this.userRepository.createAndAssign(user, userRoles)
             
         } catch (error) {
             

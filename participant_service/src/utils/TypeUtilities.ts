@@ -2,7 +2,8 @@ import { RowDataPacket } from "mysql2"
 
 export type Config = {
     server: {
-        port: number
+        port: number,
+        origin: string
     }
     database: {
         host: string,
