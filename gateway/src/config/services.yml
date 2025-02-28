@@ -1,0 +1,14 @@
+services: 
+  participant: 
+    - name: "participant-service"
+    - url: "http://localhost:3000"
+    
+  case: 
+    - name: "case-service"
+    - url: "http://localhost:3001"
+
+  evidence: 
+    - name: "evidence-service"
+    - url: "http://localhost:3002"
+
+
