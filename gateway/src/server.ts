@@ -1,6 +1,8 @@
 import express, {Application, Request, Response, } from 'express'
 import cors, { CorsOptions } from "cors"
 import {config } from "./config/Config"
+import Gateway from "./routes"
+
 const app: Application = express()
 
 const corsOptions: CorsOptions = {
@@ -11,13 +13,11 @@ const corsOptions: CorsOptions = {
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
-
 app.use(cors(corsOptions))
-// app.use('/api/v1/auth', authRoute)
-// app.use('/api/v1/participant-service/*', participantRoute)
+
+app.use('/api/v1/*', Gateway.forwardRequest);
 const httpServer = app.listen(config.server.port || 5000, async () => {
 
-    //insert permissions and roles into the table
 console.log(`Server is running on http://localhost:${config.server.port} env: ${process.env.NODE_ENV}`)
 
 })

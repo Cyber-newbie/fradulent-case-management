@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { ParsedQs } from "qs"
 import { log } from 'console';
 import ParticipantService from '../service/participant.service';
@@ -15,8 +15,9 @@ import { IResponseBody, ResponseBody } from '../dto/ResponseDto.dto';
 import { AccountStatus } from '../utils/Enums';
 import { UserService } from '../service/user.service';
 import { IUserRoleDto } from '../dto/User.dto';
+import { IUserLogin, Login } from '../dto/Login.dto';
 
-class ParticipantController {
+export class ParticipantController {
 
     private participantService: ParticipantService = new ParticipantService();
     private customerService: customerService = new customerService()
@@ -168,17 +169,41 @@ class ParticipantController {
     public async createUserAndAssignRoles(req: Request<any, any, IUserRoleDto>,
          res: Response<IResponseBody>): Promise<void> {
 
+            console.log("creating user....")
+
             const participantId = "9ec109cd-2cf3-4add-b74e-aeb7b866f4a1"
-            const { user, roles } = req.body
-            await this.userService.create(user, roles)
-
-            const response = new ResponseBody(null)
-            response.message = "User has been created and assigned roles."
-
-            res.status(201).json(response)
+            try {
+                const { user, roles } = req.body
+                await this.userService.create(user, roles)
+    
+                const response = new ResponseBody(null)
+                response.message = "User has been created and assigned roles."
+    
+                res.status(201).json(response)
+                
+            } catch (error) {
+                console.error(error)
+                res.status(500)            
+            }
 
          }
 
+    @bound 
+    public async signInUser(req: Request<any, any, Login>,
+         res: Response<IResponseBody<IUserLogin>>, next: NextFunction): Promise<void>  {
+            
+        try {
+
+            const { user, token} = await this.userService.signin(req.body)
+            const response = new ResponseBody<IUserLogin>({ user, token})
+            response.message = "User logged in"
+            res.status(200).json(response)
+
+        } catch (error) {
+             next(error)           
+        }
+
+    }    
+
 }
 
-export default ParticipantController;

@@ -63,3 +63,13 @@ export enum TransactionPaymentMethod {
     Check = "CHECK",
     Transfer = "TRANSFER"
 }
+
+export enum Method {
+
+    GET="GET",
+    POST="POST",
+    DELETE= "DELETE",
+    PUT="PUT",
+    PATCH="PATCH",
+    OPTIONS="OPTIONS"
+}

@@ -1,12 +1,13 @@
 {
   "dependencies": {
-    "@cyber-newbie/db-repository": "^1.2.0",
+    "@cyber-newbie/db-repository": "^1.2.11",
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "bcryptjs": "^3.0.2",
     "cors": "^2.8.5",
     "csv-parser": "^3.2.0",
     "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.2",
     "multer": "^1.4.5-lts.1",
     "mysql2": "^3.12.0",
     "uuid": "^11.0.5"
@@ -16,6 +17,7 @@
   "main": "server.js",
   "devDependencies": {
     "@types/cors": "^2.8.17",
+    "@types/jsonwebtoken": "^9.0.9",
     "@types/multer": "^1.4.12",
     "@types/node": "^22.10.2",
     "cross-env": "^7.0.3",

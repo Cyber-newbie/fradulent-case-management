@@ -23,7 +23,7 @@ class ParticipantService {
 
     getParticipantById = async(id: string): Promise<Participant> => {
         const participant = await this.participantRepository.findById(id)
-        return participant[0]
+        return participant 
     }
 
 
@@ -39,9 +39,7 @@ class ParticipantService {
             throw new Error("Error registering participant " + error)
         }
     }
-
     
-
 
 }
 
