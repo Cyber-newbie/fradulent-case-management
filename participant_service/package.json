@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@cyber-newbie/db-repository": "^1.2.11",
+    "@cyber-newbie/db-repository": "^1.2.15",
     "@types/bcryptjs": "^2.4.6",
     "@types/express": "^5.0.0",
     "bcryptjs": "^3.0.2",

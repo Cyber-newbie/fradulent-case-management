@@ -1,3 +1,10 @@
+import { Request } from "express";
+
+export interface AuthRequest<p, rsb, rqb, rq, l extends Record<string, any>> extends Request<p, rsb, rqb, rq, l> { 
+    participantId?: number
+    user?: {id: string}
+}
+
 export interface IResponseBody<T = null>{
     message: string
     data: T

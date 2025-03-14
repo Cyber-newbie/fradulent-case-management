@@ -1,8 +1,9 @@
-import { Role, RoleRepository,  } from "@cyber-newbie/db-repository";
+import { Role, RolePermissionRepository, RoleRepository,  } from "@cyber-newbie/db-repository";
 
 export class RoleService {
 
     private roleRepository: RoleRepository = new RoleRepository()
+    private rolePermissionRepository = new RolePermissionRepository()
     private defaultRoles: string[] = process.env.USER_ROLES ? process.env.USER_ROLES.split(" ") : [] 
     
     createBulkIfNotExist = async (): Promise<void> => {
@@ -19,6 +20,8 @@ export class RoleService {
             throw new Error("role service create bulk error: " + error)
         }    
     }
+
+
 
 
 }

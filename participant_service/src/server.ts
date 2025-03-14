@@ -42,7 +42,7 @@ const httpServer = app.listen(config.server.port || 5000, async () => {
     //insert permissions and roles into the table
     await permissionService.createBulkIfNotExist()
     await roleService.createBulkIfNotExist()
-    
+     
     //register routes
     await endpointService.registerRoute(participantRoute, '/api/v1/participant-service')
     console.log(`Server is running on http://localhost:${config.server.port} env: ${process.env.NODE_ENV}`)

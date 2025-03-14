@@ -2,19 +2,20 @@ import { NextFunction, Request, Response} from "express"
 import { config } from "./config/Config";
 import axios from "axios";
 import jwt from "jsonwebtoken"
-import { UserRole, RolePermissionRepository, RolePermissions } from "@cyber-newbie/db-repository";
+import { UserRole, RolePermissionRepository, RolePermissions, } from "@cyber-newbie/db-repository";
+
 class GatewayRoute {
 
     private rolePermissions: RolePermissionRepository = new RolePermissionRepository()
 
-    checkRoleEndpoint = (endpoint: string, method: string, permissions: RolePermissions[]) => {
+    // checkRoleEndpoint = (endpoint: string, method: string, permissions: RolePermissions[]) => {
         
-        const permission = permissions.find(permissions => 
-            permissions.getEndpoint() === endpoint && permissions.getMethod() === method)
-        if(!permission) return false
+    //     const permission = permissions.find(permissions => 
+    //         permissions.getEndpoint() === endpoint && permissions.getMethod() === method)
+    //     if(!permission) return false
 
-        return true
-    }
+    //     return true
+    // }
 
     getRolePermissions = async (userRoles: number[]): Promise<RolePermissions[]> => {
 
@@ -23,7 +24,7 @@ class GatewayRoute {
             // get role permissions
             return await this.rolePermissions.getRolesPermissions(roleId)
         })
-        const rolePermissions = await Promise.all(permissions)
+        const rolePermissions = await Promise.all(permissions)  
 
          userPermissions = rolePermissions.reduce((acc, rolePermission) => {
             
@@ -50,7 +51,7 @@ class GatewayRoute {
         const userRolesId = roles.map(role => role.getRoleId())
         const permissions = await this.getRolePermissions(userRolesId)
 
-        if(!this.checkRoleEndpoint(endpoint, method, permissions)) res.status(403).json({error: "Forbidden"})                
+        // if(!this.checkRoleEndpoint(endpoint, method, permissions)) res.status(403).json({error: "Forbidden"})                
 
         next()
     }
@@ -109,8 +110,8 @@ class GatewayRoute {
 
          res.status(500).json({ error: "Internal Server Error" });
     
+        }
     }
-    }
-    }
+ }
 }
 export default new GatewayRoute();

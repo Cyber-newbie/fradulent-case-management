@@ -50,7 +50,7 @@ export class UserService {
             if(!isEqual) throw new Error("Incorrect credentials. ")
             
             const roles = await this.userRoleRepository.getUserRoles(user.getId())
-            
+     
             const options: SignOptions = {
                 expiresIn: `${parseInt(config.token.expiry)}D`
             }
@@ -70,7 +70,7 @@ export class UserService {
 
             throw new Error("" + error)
         }
-
     }
+     
 
 }
