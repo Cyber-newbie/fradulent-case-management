@@ -1,9 +1,9 @@
-import { Role, RolePermissionRepository, RoleRepository,  } from "@cyber-newbie/db-repository";
+import { Role, UserPermissionRepository, RoleRepository,  } from "@cyber-newbie/db-repository";
 
 export class RoleService {
 
     private roleRepository: RoleRepository = new RoleRepository()
-    private rolePermissionRepository = new RolePermissionRepository()
+    private UserPermissionRepository = new UserPermissionRepository()
     private defaultRoles: string[] = process.env.USER_ROLES ? process.env.USER_ROLES.split(" ") : [] 
     
     createBulkIfNotExist = async (): Promise<void> => {

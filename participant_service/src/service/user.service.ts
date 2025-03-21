@@ -1,4 +1,4 @@
-import { Role, RoleRepository, User, UserRepository, UserRoleRepository } from "@cyber-newbie/db-repository";
+import { Action, Role, UserPermissionRepository, RoleRepository, User, UserRepository, UserRoleRepository } from "@cyber-newbie/db-repository";
 import { IUser } from "../dto/User.dto";
 import bcrypt from "bcryptjs"
 import { RoleDto } from "../dto/Role.dto";
@@ -12,7 +12,7 @@ export class UserService {
     private userRepository: UserRepository = new UserRepository()
     private roleRepository: RoleRepository = new RoleRepository()
     private userRoleRepository: UserRoleRepository = new UserRoleRepository()
-
+     
     create =  async (data: IUser, roles: RoleDto[]): Promise<void> => {
 
         try {
@@ -30,6 +30,7 @@ export class UserService {
             .setpassword(hashedPassword)
             .setStatus(data.status || Status.Active)
 
+            //creates user, assigns roles and default permissions 
             await this.userRepository.createAndAssign(user, userRoles)
             
         } catch (error) {
@@ -46,7 +47,7 @@ export class UserService {
             const user = await this.userRepository.findByEmail(data.email)
             if(!user.getId()) throw new Error("Account does not exists.")   
 
-            const isEqual =  await bcrypt.compare(data.password, user.getPassword())   
+            const isEqual = await bcrypt.compare(data.password, user.getPassword())   
             if(!isEqual) throw new Error("Incorrect credentials. ")
             
             const roles = await this.userRoleRepository.getUserRoles(user.getId())

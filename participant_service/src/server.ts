@@ -6,12 +6,13 @@ import { PermissionService } from './service/permission.service'
 import { RoleService } from './service/role.service'
 import globalErrorHandling from './middleware/Error.middleware'
 import { EndpointService } from './service/endpoint.service'
+import { ActionService } from './service/action.service'
 
 const app: Application = express()
 const permissionService: PermissionService = new PermissionService()
 const roleService: RoleService = new RoleService()
 const endpointService: EndpointService = new EndpointService()
-
+const actionService: ActionService = new ActionService()
 
 const allowedOrigins: string[] = [config.server.origin]
 
@@ -45,6 +46,7 @@ const httpServer = app.listen(config.server.port || 5000, async () => {
      
     //register routes
     await endpointService.registerRoute(participantRoute, '/api/v1/participant-service')
+    await actionService.initCreateBulk()
     console.log(`Server is running on http://localhost:${config.server.port} env: ${process.env.NODE_ENV}`)
 
 })

@@ -19,36 +19,36 @@ export function updateEndpointAccess<P, rsb, rqb, rq, l extends Record<string, a
     next: NextFunction
   ): Promise<void> {
     
-    console.log("checking endpoint access...");
-    console.log("req path: ", req.originalUrl);
+    // console.log("checking endpoint access...");
+    // console.log("req path: ", req.originalUrl);
 
-    const endpoint = await endpointRepository.findByPathAndMethod(req.originalUrl, req.method);
+    // const endpoint = await endpointRepository.findByPathAndMethod(req.originalUrl, req.method);
 
-    if (!req?.user?.id || req.participantId) {
-       res.status(401).json({ message: "Unauthorized." });
-    }
+    // if (!req?.user?.id || req.participantId) {
+    //    res.status(401).json({ message: "Unauthorized." });
+    // }
     
-    if (!endpoint) {
-       res.status(400).json({ message: "Invalid endpoint." });
-    }
+    // if (!endpoint) {
+    //    res.status(400).json({ message: "Invalid endpoint." });
+    // }
 
-    endpoint.setAction(requiredAction);
-    if (!endpoint.getAction()) {
-      await endpointService.updateEndpoint(endpoint);
-    }
+    // endpoint.setAction(requiredAction);
+    // if (!endpoint.getAction()) {
+    //   await endpointService.updateEndpoint(endpoint);
+    // }
 
-    const role = await userRoleRepository.getUserRoles(req?.user?.id || "");
-    const isRole = role.some(r => r.getRole() === requiredRole);
+    // const role = await userRoleRepository.getUserRoles(req?.user?.id || "");
+    // const isRole = role.some(r => r.getRole() === requiredRole);
 
-    console.log("endpoint found: ", endpoint);
-    console.log("user roles: ", role);
+    // console.log("endpoint found: ", endpoint);
+    // console.log("user roles: ", role);
 
-    if (endpoint.getAction() === requiredAction && isRole) {
-      console.log("access granted.");
-      return next();
-    } else {
-      console.log("access denied.");
-       res.status(403).json({ message: "Access denied." });
-    }
+    // if (endpoint.getAction() === requiredAction && isRole) {
+    //   console.log("access granted.");
+    //   return next();
+    // } else {
+    //   console.log("access denied.");
+    //    res.status(403).json({ message: "Access denied." });
+    // }
   };
 }

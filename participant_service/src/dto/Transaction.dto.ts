@@ -1,6 +1,7 @@
 import { TransactionPaymentMethod, TransactionStatus, TransactionType } from "../utils/Enums";
 
 export interface TransactionDto {
+
     id?: string;
     customerEmail: string;
     participantId: string;
@@ -13,4 +14,5 @@ export interface TransactionDto {
     time: Date;
     createdAt?: Date;
     updatedAt?: Date;
+    
 }

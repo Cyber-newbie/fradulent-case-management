@@ -1,5 +1,5 @@
 import { RowDataPacket } from "mysql2"
-import { Method } from "./Enums"
+import { ActionValues, Method } from "./Enums"
 
 export type Config = {
     server: {
@@ -30,3 +30,5 @@ export type RoutePath = {
     method: Method
     action?: string
 }
+
+export type methodAction = { method: Method, action: ActionValues }

@@ -1,12 +1,34 @@
-import { EndpointRepository, Endpoint } from "@cyber-newbie/db-repository";
+import { EndpointRepository, Endpoint, ActionRepository } from "@cyber-newbie/db-repository";
 import { IRoute, IRouter } from "express";
-import { RoutePath } from "../utils/TypeUtilities";
-import { Method } from "../utils/Enums";
-import { IEndpoint } from "../dto/Endpoint.dto";
+import { methodAction, RoutePath } from "../utils/TypeUtilities";
+import { ActionValues, Method } from "../utils/Enums";
+
+
 
 export class EndpointService { 
 
     private endpointRepository: EndpointRepository = new EndpointRepository()
+    private actionRepository: ActionRepository = new ActionRepository()
+    private rules: Map<RegExp, methodAction> = new Map<RegExp, methodAction>()
+
+    constructor(){
+
+    this.rules.set(/\/customer.*upload/i, {method: Method.POST, action: ActionValues.UPLOAD_CUSTOMER_DATA});
+    this.rules.set(/\/customer.*json/i, {method: Method.POST, action: ActionValues.UPLOAD_CUSTOMER_DATA});
+
+    this.rules.set(/\/transaction.*upload/i, {method: Method.POST, action: ActionValues.UPLOAD_TRANSACTION_DATA});
+    this.rules.set(/\/transaction.*json/i, {method: Method.POST, action: ActionValues.UPLOAD_TRANSACTION_DATA});
+
+    this.rules.set(/\/account.*upload/i, {method: Method.POST, action: ActionValues.UPLOAD_ACCOUNT_DATA});
+    this.rules.set(/\/account.*json/i, {method: Method.POST, action: ActionValues.UPLOAD_ACCOUNT_DATA});
+
+    this.rules.set(/\/accounts?$/i, {method: Method.GET, action: ActionValues.READ_ACCOUNT_DATA});
+
+    this.rules.set(/\/register.*user/i, {method: Method.POST, action: ActionValues.CREATE_USER_ASSIGN});
+    this.rules.set(/\/register/i, {method: Method.POST, action: ActionValues.CREATE_USER_ASSIGN});
+            
+    }
+
     getRegisteredEndpoints = async (): Promise<Endpoint[] | null> => {
 
         const paths = await this.endpointRepository.getAll()
@@ -61,9 +83,22 @@ export class EndpointService {
             
             if(routeList && routeList.length > 0){ 
 
-                const endpoints = routeList?.map(r => Endpoint.Builder().setPath(r.path).setMethod(r.method))
-                console.log("creating endpoints...")
-                await this.endpointRepository.createBulk(endpoints)
+                const promiseRoutes = routeList?.map(async r => {
+                       
+                    const title: string | undefined = this.getActionByRule(r.path, r.method)?.valueOf()
+
+                    let endpoint = await this.actionRepository.getActionByTitle(title || "")       
+                    endpoint.setMethod(r.method).setPath(r.path)
+                    console.log("path and method: ", r.path, r.method)
+                    console.log("action title: ", title)
+                    console.log('endpoint obj: ', endpoint)
+                    return endpoint
+
+                })
+
+                const routes = await Promise.all(promiseRoutes)
+                console.log("creating endpoints...: ", routes)
+                await this.endpointRepository.createBulk(routes)
                 console.log("endpoints created.")
             }
 
@@ -78,12 +113,25 @@ updateEndpoint = async (data: Endpoint) => {
         const endpoint = await this.endpointRepository.findByPathAndMethod(data.getPath(), data.getMethod())
         if(!endpoint) throw new Error("Endpoint not found.")
         
-        endpoint.setAction(data.getAction() || "")
+        endpoint.setAction(data.getAction() || 0)
         await this.endpointRepository.update(endpoint)    
         
     } catch (error) {
         throw new Error("Error updating endpoint: " + error)
     }
 } 
+
+getActionByRule = (path: string, method: string): ActionValues | null=> {
+
+    let endpointAction: ActionValues | null = null;
+
+    for(const [key, value] of this.rules.entries()){
+        if(key.test(path) && value.method === method ){
+            endpointAction = value.action
+        }    
+    }
+     
+    return endpointAction
+ }
 
 }

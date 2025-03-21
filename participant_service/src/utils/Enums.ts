@@ -74,7 +74,7 @@ export enum Method {
     OPTIONS="OPTIONS"
 }
 
-export enum Action { 
+export enum ActionValues { 
 
     UPLOAD_PARTICIPANT_DATA = "UPLOAD_PARTICIPANT_DATA",
     UPLOAD_CUSTOMER_DATA = "UPLOAD_CUSTOMER_DATA",
@@ -82,13 +82,21 @@ export enum Action {
     UPLOAD_TRANSACTION_DATA = "UPLOAD_TRANSACTION_DATA",
     CREATE_USER_ASSIGN= "CREATE_USER_ASSIGN",
     READ= "READ",
+    READ_ACCOUNT_DATA="READ_ACCOUNT_DATA",
+    READ_CUSTOMER_DATA="READ_CUSTOMER_DATA",
+    READ_TRANSACTION_DATA="READ_TRANSACTION_DATA",
     UPDATE= "UPDATE",
     DELETE= "DELETE",
     SIGN_IN= "SIGN_IN",
     SIGN_OUT= "SIGN_OUT",
-    SUSPEND= "SUSPEND",
+    SUSPEND= "SUSPEND"
 
 }
+export function getEnumValues(enumObj: any): string[] {
+    return Object.values(enumObj);
+}
+
+// Example usage:
 
 export enum UserRole { 
     
