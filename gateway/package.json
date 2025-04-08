@@ -23,7 +23,7 @@
     "typescript": "^5.7.3"
   },
   "dependencies": {
-    "@cyber-newbie/db-repository": "^1.2.15",
+    "@cyber-newbie/db-repository": "^1.2.28",
     "@types/cors": "^2.8.17",
     "axios": "^1.8.1",
     "cors": "^2.8.5",
